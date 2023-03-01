@@ -1,1 +1,3 @@
-let () = print_endline "Hello, World!"
+open Papyrus
+
+let () = Command_unix.run Cmd.papyrus

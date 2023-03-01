@@ -1,4 +1,4 @@
 (executable
  (public_name papyrus)
  (name main)
- (libraries papyrus))
+ (libraries papyrus core_unix.command_unix))

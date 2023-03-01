@@ -1,2 +1,5 @@
 (library
- (name papyrus))
+ (name papyrus)
+ (libraries core)
+ (preprocess
+  (pps ppx_jane)))
