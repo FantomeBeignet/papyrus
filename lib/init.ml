@@ -1,4 +1,5 @@
 open Core_unix
+open Sys_unix
 open Defaults
 
 let init_project name gitignore =
@@ -25,6 +26,16 @@ let init_command name =
         match input with Some s -> s | None -> defaults.name)
     | Some s -> s
   in
+  (match is_directory project_name with
+  | `No -> ()
+  | _ -> (
+      Printf.printf "Directory is not empty. Continue anyway? (y/N)\n";
+      Printf.printf "> ";
+      Out_channel.flush Stdlib.stdout;
+      let input = In_channel.input_char Stdlib.stdin in
+      match input with
+      | Some c when c = 'y' || c = 'Y' -> ()
+      | None | Some _ -> exit 1));
   Printf.printf "Create a .gitignore? (Y/n)\n";
   Printf.printf "> ";
   Out_channel.flush Stdlib.stdout;
