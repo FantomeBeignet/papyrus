@@ -1,10 +1,11 @@
 open Core
+open Defaults
 
 type t = {
-  name : string; [@default "Papyrus"]
-  description : string; [@default "A sample Papyrus project"]
+  name : string; [@default defaults.name]
+  description : string; [@default defaults.description]
   authors : string list; [@sexp.list]
-  language : string; [@default "en"]
+  language : string; [@default defaults.language]
   root_dir : string; [@default ""] [@sexp_drop_default String.equal]
   routes : (string * string) list; [@sexp.list]
 }
@@ -13,8 +14,8 @@ type t = {
 let load_config file = Sexp.load_sexp_conv_exn file t_of_sexp
 let default_config = Sexp.of_string "()" |> t_of_sexp
 
-let make_config ?(name = "Papyrus") ?(description = "A sample Papyrus project")
-    ?(language = "en") () =
+let make_config ?(name = defaults.name) ?(description = defaults.description)
+    ?(language = defaults.language) () =
   { default_config with name; description; language }
 
 let dump_config file config =
