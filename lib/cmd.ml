@@ -10,7 +10,10 @@ let dev =
 
 let init =
   Command.basic ~summary:"Initialize a Papyrus project"
-    (Command.Param.return (fun () -> Init.init_command))
+    (let%map_open.Command name =
+       anon (maybe ("name" %: Filename_unix.arg_type))
+     in
+     fun () -> Init.init_command name)
 
 let papyrus =
   Command.group ~summary:"Create a documentation site from markdown"
