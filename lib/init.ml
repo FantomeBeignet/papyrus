@@ -17,7 +17,7 @@ let init_command name =
       Printf.printf "Project name: (default: \"%s\")\n" defaults.name;
       Printf.printf "> "
   | Some s -> Printf.printf "Project name: %s\n" s);
-  Out_channel.flush_all ();
+  Out_channel.flush Stdlib.stdout;
   let project_name =
     match name with
     | None -> (
@@ -27,7 +27,7 @@ let init_command name =
   in
   Printf.printf "Create a .gitignore? (Y/n)\n";
   Printf.printf "> ";
-  Out_channel.flush_all ();
+  Out_channel.flush Stdlib.stdout;
   let gitignore =
     let input = In_channel.input_char Stdlib.stdin in
     match input with
