@@ -13,7 +13,8 @@ type t = {
 let load_config file = Sexp.load_sexp_conv_exn file t_of_sexp
 let default_config = Sexp.of_string "()" |> t_of_sexp
 
-let make_config ~name ~description ~language =
+let make_config ?(name = "Papyrus") ?(description = "A sample Papyrus project")
+    ?(language = "en") () =
   { default_config with name; description; language }
 
 let dump_config file config =
