@@ -11,7 +11,7 @@ let init_project name gitignore =
     Out_channel.output_string oc "_papyrus"
 
 let init_command name =
-  Printf.printf "%s\n" "Welcome to Papyrus!";
+  Printf.printf "Welcome to Papyrus!\n";
   (match name with
   | None ->
       Printf.printf "Project name: (default: \"%s\")\n" defaults.name;
@@ -25,7 +25,7 @@ let init_command name =
         match input with Some s -> s | None -> defaults.name)
     | Some s -> s
   in
-  Printf.printf "%s\n" "Create a .gitignore? (Y/n)";
+  Printf.printf "Create a .gitignore? (Y/n)\n";
   Printf.printf "> ";
   Out_channel.flush_all ();
   let gitignore =
