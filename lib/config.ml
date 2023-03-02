@@ -6,5 +6,6 @@ type t = {
   routes : (string * string) list; [@sexp.list]
 }
 [@@deriving sexp, show]
+[@@deriving sexp, show { with_path = false }]
 
 let load_config file = Sexp.load_sexp file |> t_of_sexp
