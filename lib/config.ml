@@ -16,7 +16,7 @@ let default_config = Sexp.of_string "()" |> t_of_sexp
 let make_config ~name ~description ~language =
   { default_config with name; description; language }
 
-let dump_default_config file config =
+let dump_config file config =
   let out = Out_channel.create file in
   let str = sexp_of_t config |> Sexp_pretty.sexp_to_string in
   Printf.fprintf out "%s" str
