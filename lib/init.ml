@@ -7,9 +7,11 @@ let init_project name gitignore =
   mkdir_p (Filename.concat (Filename.concat name "src") "content");
   mkdir (Filename.concat name "_papyrus");
   Config.dump_config (Filename.concat name (name ^ ".papyrus")) config;
-  if gitignore then
-    let oc = Out_channel.open_text (Filename.concat name ".gitignore") in
-    Out_channel.output_string oc "_papyrus"
+  (if gitignore then
+   let oc = Out_channel.open_text (Filename.concat name ".gitignore") in
+   Out_channel.output_string oc "_papyrus");
+  Printf.printf "Papyrus project \"%s\" created\n" name;
+  Out_channel.flush Stdlib.stdout
 
 let init_command name =
   Printf.printf "Welcome to Papyrus!\n";
@@ -35,7 +37,9 @@ let init_command name =
       let input = In_channel.input_char Stdlib.stdin in
       match input with
       | Some c when c = 'y' || c = 'Y' -> ()
-      | None | Some _ -> exit 1));
+      | None | Some _ ->
+          Printf.printf "Aborting project creation.\n";
+          exit 1));
   Printf.printf "Create a .gitignore? (Y/n)\n";
   Printf.printf "> ";
   Out_channel.flush Stdlib.stdout;
