@@ -9,11 +9,8 @@ let dev =
     (Command.Param.return (fun () -> print_endline "dev"))
 
 let init =
-  let open Command.Let_syntax in
   Command.basic ~summary:"Initialize a Papyrus project"
-    [%map_open
-      let dir = anon ("dir" %: string) in
-      fun () -> Printf.printf "init %s" dir]
+    (Command.Param.return (fun () -> Init.init_command))
 
 let papyrus =
   Command.group ~summary:"Create a documentation site from markdown"
