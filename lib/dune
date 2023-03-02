@@ -1,5 +1,5 @@
 (library
  (name papyrus)
- (libraries core)
+ (libraries core sexp_pretty)
  (preprocess
   (pps ppx_let ppx_sexp_conv ppx_deriving.show)))
