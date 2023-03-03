@@ -9,7 +9,7 @@ type t = {
   root_dir : string; [@default ""] [@sexp_drop_default String.equal]
   routes : (string * string) list; [@sexp.list]
 }
-[@@deriving sexp, show { with_path = false }]
+[@@deriving sexp]
 
 let load_config file = Sexp.load_sexp_conv_exn file t_of_sexp
 let default_config = Sexp.of_string "()" |> t_of_sexp
@@ -22,3 +22,5 @@ let dump_config file config =
   let out = Out_channel.create file in
   let str = sexp_of_t config |> Sexp_pretty.sexp_to_string in
   Printf.fprintf out "%s" str
+
+let pp config = sexp_of_t config |> Sexp_pretty.sexp_to_string |> print_endline
