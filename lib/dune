@@ -5,6 +5,8 @@
   core_unix.command_unix
   core_unix.filename_unix
   core_unix.sys_unix
-  sexp_pretty)
+  sexp_pretty
+  stdio
+  omd)
  (preprocess
   (pps ppx_let ppx_sexp_conv ppx_deriving.show ppx_string)))
