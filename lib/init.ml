@@ -10,16 +10,17 @@ let init_project name gitignore =
   (if gitignore then
    let oc = Out_channel.open_text (Filename.concat name ".gitignore") in
    Out_channel.output_string oc "_papyrus");
-  Printf.printf "Papyrus project \"%s\" created\n" name;
+  print_endline [%string "Papyrus project %{Filename.quote name} created"];
   Out_channel.flush Stdlib.stdout
 
 let init_command name =
   Printf.printf "Welcome to Papyrus!\n";
   (match name with
   | None ->
-      Printf.printf "Project name: (default: \"%s\")\n" defaults.name;
-      Printf.printf "> "
-  | Some s -> Printf.printf "Project name: %s\n" s);
+      print_endline
+        [%string "Project name: (default: %{Filename.quote defaults.name})"];
+      print_string "> "
+  | Some s -> print_endline [%string "Project name: %{Filename.quote s}"]);
   Out_channel.flush Stdlib.stdout;
   let project_name =
     match name with
@@ -31,17 +32,17 @@ let init_command name =
   (match is_directory project_name with
   | `No -> ()
   | _ -> (
-      Printf.printf "Directory is not empty. Continue anyway? (y/N)\n";
-      Printf.printf "> ";
+      print_endline "Directory is not empty. Continue anyway? (y/N)";
+      print_string "> ";
       Out_channel.flush Stdlib.stdout;
       let input = In_channel.input_char Stdlib.stdin in
       match input with
       | Some c when c = 'y' || c = 'Y' -> ()
       | None | Some _ ->
-          Printf.printf "Aborting project creation.\n";
+          print_endline "Aborting project creation.";
           exit 1));
-  Printf.printf "Create a .gitignore? (Y/n)\n";
-  Printf.printf "> ";
+  print_endline "Create a .gitignore? (Y/n)";
+  print_string "> ";
   Out_channel.flush Stdlib.stdout;
   let gitignore =
     let input = In_channel.input_char Stdlib.stdin in
