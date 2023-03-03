@@ -2,7 +2,7 @@ open Core
 
 let build =
   Command.basic ~summary:"Build the site into static HTML"
-    (Command.Param.return (fun () -> print_endline "build"))
+    (Command.Param.return (fun () -> Build.build_command ()))
 
 let dev =
   Command.basic ~summary:"Run the dev server"
