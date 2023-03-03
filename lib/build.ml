@@ -16,18 +16,20 @@ let build_project (config : Config.t) =
   | _ -> mkdir_p build_dir);
   let rec aux = function
     | [] -> ()
-    | hd :: tl -> (
-        let filename = Filename.concat content_dir hd in
-        match Sys_unix.is_directory filename with
+    | filename :: tl -> (
+        let filepath = Filename.concat content_dir filename in
+        match Sys_unix.is_directory filepath with
         | `Yes ->
-            aux (Sys_unix.ls_dir filename);
+            aux (Sys_unix.ls_dir filepath);
             aux tl
-        | _ when Filename.check_suffix hd "md" ->
-            build_file filename
+        | _ when Filename.check_suffix filename "md" ->
+            build_file filepath
               (Filename.concat build_dir
-                 (Filename.chop_suffix hd "md" ^ "html"));
+                 (Filename.chop_suffix filename "md" ^ "html"));
             aux tl
-        | _ -> aux tl)
+        | _ ->
+            Utils.cp filepath (Filename.concat build_dir filename);
+            aux tl)
   in
   aux (Sys_unix.ls_dir content_dir)
 
