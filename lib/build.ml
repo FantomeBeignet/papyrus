@@ -2,10 +2,13 @@ open Core_unix
 module Ic = Stdio.In_channel
 module Oc = Stdio.Out_channel
 
-let build_file from _to =
-  let doc = Omd.of_string (Ic.read_all from) in
-  let html = Omd.to_html ~pindent:true doc in
-  Oc.write_all _to ~data:html
+let build_file (config : Config.t) source dest =
+  Omd.of_string (Ic.read_all source)
+  |> Omd.to_html ~pindent:true
+  |> Html.make_document ~language:config.language ~title:config.name
+       ~description:config.description ~authors:config.authors
+  |> Html.prettify
+  |> fun c -> Oc.write_all dest ~data:c
 
 let build_project (config : Config.t) =
   mkdir_p (Filename.concat config.build_dir config.root_dir);
@@ -30,7 +33,7 @@ let build_project (config : Config.t) =
             aux filepath (Sys_unix.ls_dir real_file_path);
             aux dir tl
         | _ when Filename.check_suffix filename "md" ->
-            build_file real_file_path
+            build_file config real_file_path
               (Filename.chop_suffix projected_file_path "md" ^ "html");
             aux dir tl
         | _ ->
