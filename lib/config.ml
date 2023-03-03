@@ -1,4 +1,5 @@
 open Core
+open Core_unix
 open Defaults
 
 type t = {
@@ -24,3 +25,15 @@ let dump_config file config =
   Printf.fprintf out "%s" str
 
 let pp config = sexp_of_t config |> Sexp_pretty.sexp_to_string |> print_endline
+
+let find_config () =
+  let cwd = getcwd () in
+  let config_file =
+    let rec aux = function
+      | [] -> None
+      | hd :: _ when Filename.check_suffix hd "papyrus" -> Some (load_config hd)
+      | _ :: tl -> aux tl
+    in
+    aux (Sys_unix.ls_dir cwd)
+  in
+  match config_file with None -> failwith "No config file found" | Some c -> c
