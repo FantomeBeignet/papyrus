@@ -1,4 +1,3 @@
-open Core_unix
 open Stdio
 
 let cp source dest =
