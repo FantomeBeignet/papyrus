@@ -11,9 +11,9 @@ let build_file (config : Config.t) source dest =
   |> fun c -> Oc.write_all dest ~data:c
 
 let build_project (config : Config.t) =
-  mkdir_p (Filename.concat config.build_dir config.root_dir);
+  mkdir_p (Filename.concat config.build_dir config.base_url);
   let content_dir = Filename.concat "src" "content" in
-  let build_root = Filename.concat config.build_dir config.root_dir in
+  let build_root = Filename.concat config.build_dir config.base_url in
   (match Sys_unix.is_directory build_root with
   | `Yes -> ()
   | _ -> mkdir_p build_root);

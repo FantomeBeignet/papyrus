@@ -7,7 +7,7 @@ type t = {
   description : string; [@default defaults.description]
   authors : string list; [@sexp.list]
   language : string; [@default defaults.language]
-  root_dir : string; [@default ""] [@sexp_drop_default String.equal]
+  base_url : string; [@default ""] [@sexp_drop_default String.equal]
   build_dir : string; [@default "_papyrus"] [@sexp_drop_default String.equal]
   routes : (string * string) list; [@sexp.list]
 }
