@@ -3,10 +3,11 @@ open Fmt
 let pp_routes =
   parens
     (vbox
-       (list ~sep:cut (parens (pair ~sep:sp (styled `Magenta string) string))))
+       (list ~sep:cut
+          (parens (pair ~sep:sp (styled (`Fg `Magenta) string) string))))
 
 let pp_config =
-  let label = styled `Blue string in
+  let label = styled (`Fg `Blue) string in
   let quoted = quote string in
   parens
     (record
