@@ -11,4 +11,4 @@
   fmt
   sexp_pretty)
  (preprocess
-  (pps ppx_let ppx_sexp_conv ppx_deriving.show ppx_string)))
+  (pps ppx_let ppx_sexp_conv ppx_deriving.show ppx_string ppx_fields_conv)))
