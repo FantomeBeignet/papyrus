@@ -35,4 +35,34 @@ let find_config () =
     in
     aux (Sys_unix.ls_dir cwd)
   in
-  match config_file with None -> failwith "No config file found" | Some c -> c
+  match config_file with
+  | None ->
+      Pp.pp_error Fmt.stdout "No config file found";
+      exit 1
+  | Some c -> c
+
+let pp =
+  let open Fmt in
+  let label = styled (`Fg `Blue) string in
+  let quoted = quote string in
+  concat
+    [
+      parens
+        (record
+           (List.map
+              ~f:(fun fmt -> parens fmt)
+              [
+                field ~label ~sep:sp "name" (fun c -> c.name) quoted;
+                field ~label ~sep:sp "description"
+                  (fun c -> c.description)
+                  quoted;
+                field ~label ~sep:sp "authors"
+                  (fun c -> c.authors)
+                  (parens (list quoted));
+                field ~label ~sep:sp "language" (fun c -> c.language) quoted;
+                field ~label ~sep:sp "base_url" (fun c -> c.base_url) quoted;
+                field ~label ~sep:sp "build_dir" (fun c -> c.build_dir) quoted;
+                field ~label ~sep:sp "routes" (fun c -> c.routes) Pp.pp_routes;
+              ]));
+      flush;
+    ]
