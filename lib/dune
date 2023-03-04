@@ -8,6 +8,7 @@
   stdio
   omd
   markup
-  fmt)
+  fmt
+  sexp_pretty)
  (preprocess
   (pps ppx_let ppx_sexp_conv ppx_deriving.show ppx_string)))
