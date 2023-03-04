@@ -25,8 +25,6 @@ let dump_config file config =
   let str = sexp_of_t config |> Sexp_pretty.sexp_to_string in
   Printf.fprintf out "%s" str
 
-let pp config = sexp_of_t config |> Sexp_pretty.sexp_to_string |> print_endline
-
 let find_config () =
   let cwd = getcwd () in
   let config_file =
