@@ -40,3 +40,13 @@ let pp_config =
               ]));
       flush;
     ]
+
+let pp_build_step =
+  set_style_renderer stdout `Ansi_tty;
+  concat
+    [
+      const (styled `Bold (styled (`Fg `Blue) string)) "::";
+      sp;
+      styled `Bold string;
+      flush;
+    ]

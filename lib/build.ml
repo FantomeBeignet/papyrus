@@ -46,8 +46,8 @@ let build_command () =
   let config = Config.find_config () in
   Fmt.set_style_renderer Fmt.stdout `Ansi_tty;
   print_endline "";
-  print_endline "Starting build with following config:";
+  Pp.pp_build_step Fmt.stdout "Starting build with following config:";
   Pp.pp_config Fmt.stdout config;
   build_project config;
-  print_endline
+  Pp.pp_build_step Fmt.stdout
     [%string "Project built in %{Filename.quote config.build_dir} directory"]
