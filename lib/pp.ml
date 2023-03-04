@@ -20,7 +20,17 @@ let pp_error =
   set_style_renderer stdout `Ansi_tty;
   concat
     [
-      const (styled `Bold (styled (`Fg `Red) string)) "✘ ";
+      const (styled `Bold (styled (`Fg `Red) string)) "✘";
+      sp;
+      styled `Bold string;
+      flush;
+    ]
+
+let pp_success =
+  set_style_renderer stdout `Ansi_tty;
+  concat
+    [
+      const (styled `Bold (styled (`Fg `Green) string)) "✔";
       sp;
       styled `Bold string;
       flush;

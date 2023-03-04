@@ -49,5 +49,5 @@ let build_command () =
   Pp.pp_build_step Fmt.stdout "Starting build with following config:";
   Config.pp Fmt.stdout config;
   build_project config;
-  Pp.pp_build_step Fmt.stdout
+  Pp.pp_success Fmt.stdout
     [%string "Project built in %{Filename.quote config.build_dir} directory"]
