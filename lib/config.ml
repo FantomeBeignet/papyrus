@@ -11,7 +11,7 @@ type t = {
   build_dir : string; [@default "_papyrus"] [@sexp_drop_default String.equal]
   routes : (string * string) list; [@sexp.list]
 }
-[@@deriving sexp]
+[@@deriving sexp, fields]
 
 let load_config file = Sexp.load_sexp_conv_exn file t_of_sexp
 let default_config = Sexp.of_string "()" |> t_of_sexp
