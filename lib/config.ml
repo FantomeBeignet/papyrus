@@ -37,9 +37,6 @@ let find_config () =
   | Some c -> c
 
 let pp formatter config =
-  let open Fmt in
-  let label = styled `Bold (styled (`Fg `Blue) string) in
-  let value_style = styled (`Fg `Green) (quote string) in
   let max_field_length =
     let rec aux acc = function
       | [] -> acc
@@ -48,8 +45,16 @@ let pp formatter config =
     in
     aux 0 Fields.names
   in
+  let open Fmt in
   let make_spaces field_name =
     sps (max_field_length - String.length field_name + 1)
+  in
+  let label = styled `Bold (styled (`Fg `Blue) string) in
+  let value_style = styled (`Fg `Green) (quote string) in
+  let fname = Fieldslib.Field.name in
+  let fget = Fieldslib.Field.get in
+  let format_config_field fmt f _ _ =
+    field ~label ~sep:(make_spaces (fname f)) (fname f) (fget f) fmt
   in
   concat
     [
@@ -58,30 +63,14 @@ let pp formatter config =
            (List.map
               ~f:(fun fmt -> parens fmt)
               (Fields.Direct.to_list config
-                 ~title:(fun f _ _ ->
-                   field ~label ~sep:(make_spaces "title") "title"
-                     (Fieldslib.Field.get f) value_style)
-                 ~description:(fun f _ _ ->
-                   field ~label
-                     ~sep:(make_spaces "description")
-                     "description" (Fieldslib.Field.get f) value_style)
-                 ~authors:(fun f _ _ ->
-                   field ~label ~sep:(make_spaces "authors") "authors"
-                     (Fieldslib.Field.get f)
-                     (parens (list ~sep:sp value_style)))
-                 ~language:(fun f _ _ ->
-                   field ~label ~sep:(make_spaces "language") "language"
-                     (Fieldslib.Field.get f) value_style)
-                 ~base_url:(fun f _ _ ->
-                   field ~label ~sep:(make_spaces "base_url") "base_url"
-                     (Fieldslib.Field.get f) value_style)
-                 ~build_dir:(fun f _ _ ->
-                   field ~label ~sep:(make_spaces "build_dir") "build_dir"
-                     (Fieldslib.Field.get f) value_style)
-                 ~routes:(fun f _ _ ->
-                   field ~label ~sep:(make_spaces "routes") "routes"
-                     (Fieldslib.Field.get f)
-                     (Pp.pp_routes config.routes)))));
+                 ~title:(format_config_field value_style)
+                 ~description:(format_config_field value_style)
+                 ~authors:
+                   (format_config_field (parens (list ~sep:sp value_style)))
+                 ~language:(format_config_field value_style)
+                 ~base_url:(format_config_field value_style)
+                 ~build_dir:(format_config_field value_style)
+                 ~routes:(format_config_field (Pp.pp_routes config.routes)))));
       flush;
     ]
     formatter config
