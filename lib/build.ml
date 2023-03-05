@@ -5,7 +5,7 @@ module Oc = Stdio.Out_channel
 let build_file (config : Config.t) source dest =
   Omd.of_string (Ic.read_all source)
   |> Omd.to_html ~pindent:true
-  |> Html.make_document ~language:config.language ~title:config.name
+  |> Html.make_document ~language:config.language ~title:config.title
        ~description:config.description ~authors:config.authors
   |> Html.prettify
   |> fun c -> Oc.write_all dest ~data:c

@@ -3,7 +3,7 @@ open Core_unix
 open Defaults
 
 type t = {
-  name : string; [@default defaults.name]
+  title : string; [@default defaults.title]
   description : string; [@default defaults.description]
   authors : string list; [@sexp.list]
   language : string; [@default defaults.language]
@@ -16,9 +16,9 @@ type t = {
 let load_config file = Sexp.load_sexp_conv_exn file t_of_sexp
 let default_config = Sexp.of_string "()" |> t_of_sexp
 
-let make_config ?(name = defaults.name) ?(description = defaults.description)
+let make_config ?(title = defaults.title) ?(description = defaults.description)
     ?(language = defaults.language) () =
-  { default_config with name; description; language }
+  { default_config with title; description; language }
 
 let find_config () =
   let cwd = getcwd () in
@@ -58,8 +58,8 @@ let pp formatter config =
            (List.map
               ~f:(fun fmt -> parens fmt)
               (Fields.Direct.to_list config
-                 ~name:(fun f _ _ ->
-                   field ~label ~sep:(make_spaces "name") "name"
+                 ~title:(fun f _ _ ->
+                   field ~label ~sep:(make_spaces "title") "title"
                      (Fieldslib.Field.get f) value_style)
                  ~description:(fun f _ _ ->
                    field ~label

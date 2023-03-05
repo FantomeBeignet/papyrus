@@ -1,8 +1,8 @@
-type defaults = { name : string; description : string; language : string }
+type defaults = { title : string; description : string; language : string }
 
 let defaults =
   {
-    name = "papyrus";
+    title = "papyrus";
     description = "A sample Papyrus project";
     language = "en";
   }
