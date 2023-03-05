@@ -20,11 +20,6 @@ let make_config ?(name = defaults.name) ?(description = defaults.description)
     ?(language = defaults.language) () =
   { default_config with name; description; language }
 
-let dump_config file config =
-  let out = Out_channel.create file in
-  let str = sexp_of_t config |> Sexp_pretty.sexp_to_string in
-  Printf.fprintf out "%s" str
-
 let find_config () =
   let cwd = getcwd () in
   let config_file =
@@ -90,3 +85,8 @@ let pp formatter config =
       flush;
     ]
     formatter config
+
+let dump_config file config =
+  let out = Out_channel.create file in
+  let str = Fmt.str "%a" pp config in
+  Printf.fprintf out "%s" str
