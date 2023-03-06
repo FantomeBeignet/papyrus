@@ -14,11 +14,7 @@ let init_project title gitignore =
   print_endline [%string "Papyrus project %{Filename.quote title} created"];
   Out_channel.flush Stdlib.stdout
 
-let title_term =
-  let info = C.Arg.info [] ~doc:"The name of your project" in
-  C.Arg.value (C.Arg.pos 0 (C.Arg.some C.Arg.string) None info)
-
-let init title =
+let init title gitignore =
   Printf.printf "Welcome to Papyrus!\n";
   (match title with
   | None ->
@@ -46,19 +42,31 @@ let init title =
       | None | Some _ ->
           print_endline "Aborting project creation.";
           exit 1));
-  print_endline "Create a .gitignore? (Y/n)";
-  print_string "> ";
-  Out_channel.flush Stdlib.stdout;
-  let gitignore =
-    let input = In_channel.input_char Stdlib.stdin in
-    match input with
-    | Some c when c = 'n' || c = 'n' -> false
-    | None -> true
-    | Some _ -> true
+  let _gitignore =
+    if not gitignore then (
+      print_endline "Create a .gitignore? (Y/n)";
+      print_string "> ";
+      Out_channel.flush Stdlib.stdout;
+      let input = In_channel.input_char Stdlib.stdin in
+      match input with
+      | Some c when c = 'n' || c = 'n' -> false
+      | None -> true
+      | Some _ -> true)
+    else true
   in
-  init_project project_name gitignore
+  init_project project_name _gitignore
 
-let init_term = C.Term.(const init $ title_term)
+let title_term =
+  let info = C.Arg.info [] ~doc:"The name of your project" ~docv:"NAME" in
+  C.Arg.value (C.Arg.pos 0 (C.Arg.some C.Arg.string) None info)
+
+let gitignore_term =
+  let info =
+    C.Arg.info [ "gitignore" ] ~doc:"Create a .gitignore in your project"
+  in
+  C.Arg.value (C.Arg.flag info)
+
+let init_term = C.Term.(const init $ title_term $ gitignore_term)
 
 let init_command =
   let doc = "Initialise a Papyrus project" in
