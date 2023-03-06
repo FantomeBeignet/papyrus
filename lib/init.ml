@@ -3,8 +3,8 @@ open Sys_unix
 open Defaults
 module C = Cmdliner
 
-let init_project title description gitignore =
-  let config = Config.make_config ~title ~description () in
+let init_project title description language gitignore =
+  let config = Config.make_config ~title ~description ~language () in
   mkdir_p (Filename.concat (Filename.concat title "src") "content");
   mkdir (Filename.concat title "_papyrus");
   Config.dump_config (Filename.concat title (title ^ ".papyrus")) config;
@@ -14,7 +14,7 @@ let init_project title description gitignore =
   print_endline [%string "Papyrus project %{Filename.quote title} created"];
   Out_channel.flush Stdlib.stdout
 
-let init title description gitignore =
+let init title description language gitignore =
   Printf.printf "Welcome to Papyrus!\n";
   (match title with
   | None ->
@@ -64,7 +64,7 @@ let init title description gitignore =
         let input = In_channel.input_line Stdlib.stdin in
         match input with Some s -> s | None -> failwith "Exited")
   in
-  init_project project_name _description _gitignore
+  init_project project_name _description language _gitignore
 
 let title_term =
   let info = C.Arg.info [] ~doc:"The name of your project" ~docv:"NAME" in
@@ -77,6 +77,14 @@ let description_term =
   in
   C.Arg.value (C.Arg.opt (C.Arg.some C.Arg.string) None info)
 
+let language_term =
+  let default = "en" in
+  let info =
+    C.Arg.info [ "l"; "language" ] ~docv:"LANGUAGE"
+      ~doc:"Language of the project"
+  in
+  C.Arg.value (C.Arg.opt C.Arg.string default info)
+
 let gitignore_term =
   let info =
     C.Arg.info [ "gitignore" ] ~docv:"GITIGNORE"
@@ -85,9 +93,11 @@ let gitignore_term =
   C.Arg.value (C.Arg.flag info)
 
 let init_term =
-  C.Term.(const init $ title_term $ description_term $ gitignore_term)
+  C.Term.(
+    const init $ title_term $ description_term $ language_term $ gitignore_term)
 
 let init_command =
   let doc = "Initialise a Papyrus project" in
-  let info = C.Cmd.info "init" ~doc in
+  let man = [ `S C.Manpage.s_synopsis; `P "papyrus init [OPTIONS] [NAME]" ] in
+  let info = C.Cmd.info "init" ~man ~doc in
   C.Cmd.v info init_term
