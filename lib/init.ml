@@ -1,6 +1,7 @@
 open Core_unix
 open Sys_unix
 open Defaults
+module C = Cmdliner
 
 let init_project title gitignore =
   let config = Config.make_config ~title () in
@@ -13,7 +14,11 @@ let init_project title gitignore =
   print_endline [%string "Papyrus project %{Filename.quote title} created"];
   Out_channel.flush Stdlib.stdout
 
-let init_command title =
+let title_term =
+  let info = C.Arg.info [] ~doc:"The name of your project" in
+  C.Arg.value (C.Arg.pos 0 (C.Arg.some C.Arg.string) None info)
+
+let init title =
   Printf.printf "Welcome to Papyrus!\n";
   (match title with
   | None ->
@@ -52,3 +57,10 @@ let init_command title =
     | Some _ -> true
   in
   init_project project_name gitignore
+
+let init_term = C.Term.(const init $ title_term)
+
+let init_command =
+  let doc = "Initialise a Papyrus project" in
+  let info = C.Cmd.info "init" ~doc in
+  C.Cmd.v info init_term

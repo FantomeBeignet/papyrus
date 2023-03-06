@@ -2,12 +2,13 @@
  (name papyrus)
  (libraries
   core
-  core_unix.command_unix
+  core_unix
   core_unix.filename_unix
   core_unix.sys_unix
   stdio
   omd
   markup
-  fmt)
+  fmt
+  cmdliner)
  (preprocess
   (pps ppx_let ppx_sexp_conv ppx_deriving.show ppx_string ppx_fields_conv)))
