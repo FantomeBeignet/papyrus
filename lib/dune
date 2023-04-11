@@ -6,7 +6,7 @@
   core_unix.filename_unix
   core_unix.sys_unix
   stdio
-  omd
+  cmarkit
   markup
   fmt
   cmdliner)
