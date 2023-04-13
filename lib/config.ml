@@ -79,3 +79,12 @@ let dump_config file config =
   let out = Out_channel.create file in
   let str = Fmt.str "%a" pp config in
   Printf.fprintf out "%s" str
+
+let routes_to_map routes =
+  let rec aux acc = function
+    | [] -> acc
+    | (v, k) :: tl -> (
+        let new_map = Map.add acc ~key:k ~data:v in
+        match new_map with `Ok n -> aux n tl | `Duplicate -> aux acc tl)
+  in
+  aux (Map.empty (module String)) routes
