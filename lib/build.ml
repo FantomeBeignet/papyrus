@@ -4,11 +4,8 @@ module Oc = Stdio.Out_channel
 module C = Cmdliner
 
 let build_file (config : Config.t) source dest =
-  Cmarkit.Doc.of_string ~strict:false source
-  |> Cmarkit_html.of_doc ~safe:false
-  |> Html.make_document ~language:config.language ~title:config.title
-       ~description:config.description ~authors:config.authors
-  |> Html.prettify
+  Html.render_page ~lang:config.language ~title:config.title
+    ~description:config.description ~authors:config.authors source
   |> fun c -> Oc.write_all dest ~data:c
 
 let build_project (config : Config.t) =
