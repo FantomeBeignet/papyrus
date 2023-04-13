@@ -9,8 +9,8 @@ let init_project title description language gitignore =
   mkdir (Filename.concat title "_papyrus");
   Config.dump_config (Filename.concat title (title ^ ".papyrus")) config;
   (if gitignore then
-   let oc = Out_channel.open_text (Filename.concat title ".gitignore") in
-   Out_channel.output_string oc "_papyrus");
+     let oc = Out_channel.open_text (Filename.concat title ".gitignore") in
+     Out_channel.output_string oc "_papyrus");
   print_endline [%string "Papyrus project %{Filename.quote title} created"];
   Out_channel.flush Stdlib.stdout
 
