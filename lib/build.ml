@@ -4,8 +4,9 @@ module Oc = Stdio.Out_channel
 module C = Cmdliner
 
 let build_file (config : Config.t) source dest =
-  Html.render_page ~lang:config.language ~title:config.title
-    ~description:config.description ~authors:config.authors source
+  Ic.read_all source
+  |> Html.render_page ~lang:config.language ~title:config.title
+    ~description:config.description ~authors:config.authors
   |> fun c -> Oc.write_all dest ~data:c
 
 let build_project (config : Config.t) =
