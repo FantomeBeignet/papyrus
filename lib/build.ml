@@ -48,7 +48,7 @@ let build_project (config : Config.t) =
   in
   aux "" (Sys_unix.ls_dir content_dir)
 
-let build () =
+let build_cmd () =
   let config = Config.find_config () in
   Fmt.set_style_renderer Fmt.stdout `Ansi_tty;
   print_endline "";
@@ -58,9 +58,3 @@ let build () =
   Pp.pp_success Fmt.stdout
     [%string "Project built in %{Filename.quote config.build_dir} directory"]
 
-let build_term = C.Term.(const build $ const ())
-
-let build_command =
-  let doc = "Build a Papyrus project" in
-  let info = C.Cmd.info "build" ~doc in
-  C.Cmd.v info build_term

@@ -14,7 +14,7 @@ let init_project title description language gitignore =
   print_endline [%string "Papyrus project %{Filename.quote title} created"];
   Out_channel.flush Stdlib.stdout
 
-let init title description language gitignore =
+let init_cmd title description language gitignore =
   Printf.printf "Welcome to Papyrus!\n";
   (match title with
   | None ->
@@ -65,39 +65,3 @@ let init title description language gitignore =
         match input with Some s -> s | None -> failwith "Exited")
   in
   init_project project_name _description language _gitignore
-
-let title_term =
-  let info = C.Arg.info [] ~doc:"The name of your project" ~docv:"NAME" in
-  C.Arg.value (C.Arg.pos 0 (C.Arg.some C.Arg.string) None info)
-
-let description_term =
-  let info =
-    C.Arg.info [ "d"; "description" ] ~docv:"DESCRIPTION"
-      ~doc:"Description of the project"
-  in
-  C.Arg.value (C.Arg.opt (C.Arg.some C.Arg.string) None info)
-
-let language_term =
-  let default = "en" in
-  let info =
-    C.Arg.info [ "l"; "language" ] ~docv:"LANGUAGE"
-      ~doc:"Language of the project"
-  in
-  C.Arg.value (C.Arg.opt C.Arg.string default info)
-
-let gitignore_term =
-  let info =
-    C.Arg.info [ "gitignore" ] ~docv:"GITIGNORE"
-      ~doc:"Create a .gitignore in your project"
-  in
-  C.Arg.value (C.Arg.flag info)
-
-let init_term =
-  C.Term.(
-    const init $ title_term $ description_term $ language_term $ gitignore_term)
-
-let init_command =
-  let doc = "Initialise a Papyrus project" in
-  let man = [ `S C.Manpage.s_synopsis; `P "papyrus init [OPTIONS] [NAME]" ] in
-  let info = C.Cmd.info "init" ~man ~doc in
-  C.Cmd.v info init_term
