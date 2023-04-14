@@ -1,5 +1,9 @@
 open Cmdliner
 
+let verbose_term =
+  let info = Arg.info ["v"; "verbose"] ~doc:"Verbose command output" in
+  Arg.value (Arg.flag info)
+
 let title_term =
   let info = Arg.info [] ~doc:"The name of your project" ~docv:"NAME" in
   Arg.value (Arg.pos 0 (Arg.some Arg.string) None info)
@@ -44,7 +48,7 @@ let dev =
   let info = Cmd.info "dev" ~doc in
   Cmd.v info dev_term
 
-let build_term = Term.(const Build.build_cmd $ const ())
+let build_term = Term.(const Build.build_cmd $ verbose_term)
 
 let build =
   let doc = "Build a Papyrus project" in
