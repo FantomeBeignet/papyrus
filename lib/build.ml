@@ -6,8 +6,7 @@ module C = Cmdliner
 
 let build_file (config : Config.t) source dest =
   Ic.read_all source
-  |> Html.render_page ~lang:config.language ~title:config.title
-       ~description:config.description ~authors:config.authors
+  |> Html.render_page ~config
   |> fun c -> Oc.write_all dest ~data:c
 
 let build_project (config : Config.t) =
