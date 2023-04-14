@@ -53,3 +53,13 @@ let pp_success =
       styled `Bold string;
       flush;
     ]
+
+let pp_info =
+  set_style_renderer stdout `Ansi_tty;
+  concat
+    [
+      const (styled `Bold (styled (`Fg `Magenta) string)) "Info:";
+      sp;
+      styled `Bold string;
+      flush;
+    ]
