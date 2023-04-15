@@ -4,6 +4,10 @@ module Ic = Stdio.In_channel
 module Oc = Stdio.Out_channel
 
 let build_file (config : Config.t) source dest =
+  let dirname = Filename.dirname dest in 
+  match Sys_unix.is_directory dirname with
+  | `Yes -> ()
+  | _ -> mkdir_p dirname;
   Ic.read_all source
   |> Html.render_page ~config
   |> fun c -> Oc.write_all dest ~data:c
