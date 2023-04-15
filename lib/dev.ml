@@ -1,3 +1,1 @@
-module C = Cmdliner
-
-let dev_cmd () = print_endline "dev"
+let dev_cmd verbose = print_endline "dev"; if verbose then print_endline "verbose"

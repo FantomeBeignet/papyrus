@@ -32,7 +32,7 @@ let gitignore_term =
 
 let init_term =
   Term.(
-    const Init.init_cmd $ title_term $ description_term $ language_term $ gitignore_term)
+    const Init.init_cmd $ title_term $ description_term $ language_term $ gitignore_term $ verbose_term)
 
 let init =
   let doc = "Initialise a Papyrus project" in
@@ -41,7 +41,7 @@ let init =
   Cmd.v info init_term
 
 
-let dev_term = Term.(const Dev.dev_cmd $ const ())
+let dev_term = Term.(const Dev.dev_cmd $ verbose_term)
 
 let dev =
   let doc = "Start the dev server" in

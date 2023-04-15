@@ -1,20 +1,23 @@
 open Core_unix
 open Sys_unix
 open Defaults
-module C = Cmdliner
 
-let init_project title description language gitignore =
+let init_project verbose title description language gitignore =
   let config = Config.make_config ~title ~description ~language () in
   mkdir_p (Filename.concat (Filename.concat title "src") "content");
+  if verbose then
+  Pp.pp_info Fmt.stdout (Printf.sprintf "Created directory %s" (Filename.concat (Filename.concat title "src") "content"));
   mkdir (Filename.concat title "_papyrus");
+  if verbose then Pp.pp_info Fmt.stdout (Printf.sprintf "Created directory %s" (Filename.concat title "_papyrus"));
   Config.dump_config (Filename.concat title (title ^ ".papyrus")) config;
   (if gitignore then
      let oc = Out_channel.open_text (Filename.concat title ".gitignore") in
+     if verbose then Pp.pp_info Fmt.stdout (Printf.sprintf "Created file %s" (Filename.concat title ".gitignore"));
      Out_channel.output_string oc "_papyrus");
   print_endline [%string "Papyrus project %{Filename.quote title} created"];
   Out_channel.flush Stdlib.stdout
 
-let init_cmd title description language gitignore =
+let init_cmd title description language gitignore verbose =
   Printf.printf "Welcome to Papyrus!\n";
   (match title with
   | None ->
@@ -64,4 +67,4 @@ let init_cmd title description language gitignore =
         let input = In_channel.input_line Stdlib.stdin in
         match input with Some s -> s | None -> failwith "Exited")
   in
-  init_project project_name _description language _gitignore
+  init_project verbose project_name _description language _gitignore
