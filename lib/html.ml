@@ -21,7 +21,7 @@ let extract_link_target link =
   | _ -> None
 
 let remap_links links doc =
-  let links_map = Config.routes_to_map links in
+  let links_map = Config.Routes.to_map links in
   let open Cmarkit in
   let inline links_map _ = function
     | Inline.Link (l, meta) ->

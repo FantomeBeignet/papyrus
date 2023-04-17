@@ -4,19 +4,18 @@ module Ic = Stdio.In_channel
 module Oc = Stdio.Out_channel
 
 let build_file (config : Config.t) source dest =
-  let dirname = Filename.dirname dest in 
-  match Sys_unix.is_directory dirname with
+  let dirname = Filename.dirname dest in
+  (match Sys_unix.is_directory dirname with
   | `Yes -> ()
-  | _ -> mkdir_p dirname;
-  Ic.read_all source
-  |> Html.render_page ~config
-  |> fun c -> Oc.write_all dest ~data:c
+  | _ -> mkdir_p dirname);
+  Ic.read_all source |> Html.render_page ~config |> fun c ->
+  Oc.write_all dest ~data:c
 
 let build_project verbose (config : Config.t) =
   mkdir_p (Utils.concat_paths config.build_dir config.base_url);
   let content_dir = Utils.concat_paths "src" "content" in
   let build_root = Utils.concat_paths config.build_dir config.base_url in
-  let routes_map = Config.routes_to_map config.routes in
+  let routes_map = Config.Routes.to_map config.routes in
   let map_filename path =
     let dirname = Filename.dirname path and basename = Filename.basename path in
     match Map.find routes_map basename with
@@ -42,12 +41,18 @@ let build_project verbose (config : Config.t) =
             aux filepath (Sys_unix.ls_dir real_file_path);
             aux dir tl
         | _ when Filename.check_suffix filename "md" ->
-            if verbose then Pp.pp_info Fmt.stdout (Printf.sprintf "Building file %s to output %s" real_file_path (map_filename projected_file_path ^ ".html"));
-            build_file config real_file_path
-              (map_filename projected_file_path ^ ".html");
+            let mapped_filename = map_filename projected_file_path ^ ".html" in
+            if verbose then
+              Pp.pp_info Fmt.stdout
+                (Printf.sprintf "Building file %s to output %s" real_file_path
+                   mapped_filename);
+            build_file config real_file_path mapped_filename;
             aux dir tl
         | _ ->
-            if verbose then Pp.pp_info Fmt.stdout (Printf.sprintf "Copying file %s to output %s" real_file_path projected_file_path);
+            if verbose then
+              Pp.pp_info Fmt.stdout
+                (Printf.sprintf "Copying file %s to output %s" real_file_path
+                   projected_file_path);
             Utils.cp real_file_path projected_file_path;
             aux dir tl)
   in
@@ -62,4 +67,3 @@ let build_cmd verbose =
   build_project verbose config;
   Pp.pp_success Fmt.stdout
     [%string "Project built in %{Filename.quote config.build_dir} directory"]
-
