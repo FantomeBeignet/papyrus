@@ -9,7 +9,6 @@
   cmarkit
   markup
   fmt
-  sexp_pretty
   cmdliner)
  (preprocess
   (pps ppx_let ppx_sexp_conv ppx_deriving.show ppx_string ppx_fields_conv)))

@@ -68,6 +68,37 @@ module Routes = struct
           match new_map with `Ok n -> aux ~prefix n tl | `Duplicate -> aux ~prefix acc tl)
     in
     aux ~prefix:"" (Map.empty (module String)) routes
+
+  let pp_single_route route = 
+  let open Fmt in
+  let quoted = quote string in
+  let style_simple_route (route, file) =
+    const
+      (parens
+         (pair ~sep:sp
+            (styled (`Fg `Magenta) quoted)
+            (styled (`Fg `Green) quoted)))
+      (route, file)
+  in
+  let style_nested_first_route (route, file) =
+    const
+      (hbox (
+         (pair ~sep:sp
+            (styled (`Fg `Magenta) quoted)
+            (styled (`Fg `Green) quoted))))
+      (route, file)
+  in
+    let rec aux = function
+      | Simple (url, file) -> style_simple_route (url, file) 
+      | Nested (url, file, rest) -> 
+          let rest_style = List.map ~f:aux rest |> record |> parens in
+          let base_style = style_nested_first_route (url, file) in
+          record [ base_style; rest_style ] |> parens
+    in aux route
+
+  let pp (routes: t) = 
+    let open Fmt in
+    List.map ~f:pp_single_route routes |> record |> parens
 end
 
 type t = {
@@ -105,45 +136,43 @@ let find_config () =
   | Some c -> c
 
 let pp formatter config =
-  (* let max_field_length = *)
-  (*   let rec aux acc = function *)
-  (*     | [] -> acc *)
-  (*     | hd :: tl when String.length hd > acc -> aux (String.length hd) tl *)
-  (*     | _ :: tl -> aux acc tl *)
-  (*   in *)
-  (*   aux 0 Fields.names *)
-  (* in *)
-  (* let open Fmt in *)
-  (* let make_spaces field_name = *)
-  (*   sps (max_field_length - String.length field_name + 1) *)
-  (* in *)
-  (* let label = styled `Bold (styled (`Fg `Blue) string) in *)
-  (* let value_style = styled (`Fg `Green) (quote string) in *)
-  (* let fname = Fieldslib.Field.name in *)
-  (* let fget = Fieldslib.Field.get in *)
-  (* let format_config_field fmt f _ _ = *)
-  (*   field ~label ~sep:(make_spaces (fname f)) (fname f) (fget f) fmt *)
-  (* in *)
-  (* concat *)
-  (*   [ *)
-  (*     parens *)
-  (*       (record *)
-  (*          (List.map *)
-  (*             ~f:(fun fmt -> parens fmt) *)
-  (*             (Fields.Direct.to_list config *)
-  (*                ~title:(format_config_field value_style) *)
-  (*                ~description:(format_config_field value_style) *)
-  (*                ~authors: *)
-  (*                  (format_config_field (parens (list ~sep:sp value_style))) *)
-  (*                ~language:(format_config_field value_style) *)
-  (*                ~base_url:(format_config_field value_style) *)
-  (*                ~build_dir:(format_config_field value_style) *)
-  (*                ~routes:(format_config_field (Pp.pp_routes config.routes))))); *)
-  (*     flush; *)
-  (*   ] *)
-  (*   formatter config *)
-  let s = sexp_of_t config |> Sexp_pretty.sexp_to_string in
-  Fmt.string formatter s
+  let max_field_length =
+    let rec aux acc = function
+      | [] -> acc
+      | hd :: tl when String.length hd > acc -> aux (String.length hd) tl
+      | _ :: tl -> aux acc tl
+    in
+    aux 0 Fields.names
+  in
+  let open Fmt in
+  let make_spaces field_name =
+    sps (max_field_length - String.length field_name + 1)
+  in
+  let label = styled `Bold (styled (`Fg `Blue) string) in
+  let value_style = styled (`Fg `Green) (quote string) in
+  let fname = Fieldslib.Field.name in
+  let fget = Fieldslib.Field.get in
+  let format_config_field fmt f _ _ =
+    field ~label ~sep:(make_spaces (fname f)) (fname f) (fget f) fmt
+  in
+  concat
+    [
+      parens
+        (record
+           (List.map
+              ~f:(fun fmt -> parens fmt)
+              (Fields.Direct.to_list config
+                 ~title:(format_config_field value_style)
+                 ~description:(format_config_field value_style)
+                 ~authors:
+                   (format_config_field (parens (list ~sep:sp value_style)))
+                 ~language:(format_config_field value_style)
+                 ~base_url:(format_config_field value_style)
+                 ~build_dir:(format_config_field value_style)
+                 ~routes:(format_config_field (Routes.pp config.routes)))));
+      flush;
+    ]
+    formatter config
 
 let dump_config file config =
   let out = Out_channel.create file in
