@@ -20,8 +20,8 @@ let extract_link_target link =
   (* TODO: Handle non inline cases *)
   | _ -> None
 
-let remap_links links doc =
-  let links_map = Config.Routes.to_map links in
+let remap_links (config: Config.t) doc =
+  let links_map = Config.Routes.to_map config.routes in
   let open Cmarkit in
   let inline links_map _ = function
     | Inline.Link (l, meta) ->
@@ -33,7 +33,7 @@ let remap_links links doc =
                 Map.find links_map
                   (String.strip ~drop:(fun c -> Char.equal c '"') t)
               with
-              | Some a -> convert_to_html_path a
+              | Some a -> Utils.concat_paths config.base_url a |> convert_to_html_path
               | None -> "/")
         in
         let node = (target, Meta.make ()) in
@@ -51,9 +51,8 @@ let render_page ~(config : Config.t) content =
   let lang = config.language
   and title = config.title
   and description = config.description
-  and authors = config.authors
-  and routes = config.routes in
-  let doc = remap_links routes (Cmarkit.Doc.of_string content) in
+  and authors = config.authors in
+  let doc = remap_links config (Cmarkit.Doc.of_string content) in
   let r = Cmarkit_html.renderer ~safe:false () in
   let buffer_add_doc = Cmarkit_renderer.buffer_add_doc r in
   let buffer_add_string = Cmarkit_html.buffer_add_html_escaped_string in
