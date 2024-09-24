@@ -6,14 +6,20 @@ let init_project verbose title description language gitignore =
   let config = Config.make_config ~title ~description ~language () in
   mkdir_p (Filename.concat (Filename.concat title "src") "content");
   if verbose then
-  Pp.pp_info Fmt.stdout (Printf.sprintf "Created directory %s" (Filename.concat (Filename.concat title "src") "content"));
+    Pp.pp_info Fmt.stdout
+      (Printf.sprintf "Created directory %s"
+         (Filename.concat (Filename.concat title "src") "content"));
   mkdir (Filename.concat title "_papyrus");
-  if verbose then Pp.pp_info Fmt.stdout (Printf.sprintf "Created directory %s" (Filename.concat title "_papyrus"));
+  if verbose then
+    Pp.pp_info Fmt.stdout
+      (Printf.sprintf "Created directory %s" (Filename.concat title "_papyrus"));
   Config.dump_config (Filename.concat title (title ^ ".papyrus")) config;
-  (if gitignore then
-     let oc = Out_channel.open_text (Filename.concat title ".gitignore") in
-     if verbose then Pp.pp_info Fmt.stdout (Printf.sprintf "Created file %s" (Filename.concat title ".gitignore"));
-     Out_channel.output_string oc "_papyrus");
+  if gitignore then (
+    let oc = Out_channel.open_text (Filename.concat title ".gitignore") in
+    if verbose then
+      Pp.pp_info Fmt.stdout
+        (Printf.sprintf "Created file %s" (Filename.concat title ".gitignore"));
+    Out_channel.output_string oc "_papyrus");
   print_endline [%string "Papyrus project %{Filename.quote title} created"];
   Out_channel.flush Stdlib.stdout
 

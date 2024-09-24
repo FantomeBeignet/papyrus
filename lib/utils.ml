@@ -26,5 +26,5 @@ let get_fields_align fields =
   let max_field_length = aux 0 fields in
   List.map ~f:(fun (elt, _) -> max_field_length - String.length elt) fields
 
-let concat_paths p1 p2 = 
+let concat_paths p1 p2 =
   if String.is_empty p1 then p2 else Filename.concat p1 p2

@@ -20,7 +20,7 @@ let extract_link_target link =
   (* TODO: Handle non inline cases *)
   | _ -> None
 
-let remap_links (config: Config.t) doc =
+let remap_links (config : Config.t) doc =
   let links_map = Config.Routes.to_map config.routes in
   let open Cmarkit in
   let inline links_map _ = function
@@ -33,7 +33,8 @@ let remap_links (config: Config.t) doc =
                 Map.find links_map
                   (String.strip ~drop:(fun c -> Char.equal c '"') t)
               with
-              | Some a -> Utils.concat_paths config.base_url a |> convert_to_html_path
+              | Some a ->
+                  Utils.concat_paths config.base_url a |> convert_to_html_path
               | None -> "/")
         in
         let node = (target, Meta.make ()) in

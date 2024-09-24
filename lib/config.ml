@@ -60,43 +60,54 @@ module Routes = struct
     let rec aux ~prefix acc = function
       | [] -> acc
       | Simple (v, k) :: tl -> (
-          let new_map = Map.add acc ~key:k ~data:(Utils.concat_paths prefix v) in
-          match new_map with `Ok n -> aux ~prefix n tl | `Duplicate -> aux ~prefix acc tl)
+          let new_map =
+            Map.add acc ~key:k ~data:(Utils.concat_paths prefix v)
+          in
+          match new_map with
+          | `Ok n -> aux ~prefix n tl
+          | `Duplicate -> aux ~prefix acc tl)
       | Nested (v, k, rest) :: tl -> (
-          let with_nested = aux ~prefix:(Utils.concat_paths v prefix) acc rest in
-          let new_map = Map.add with_nested ~key:k ~data:(Utils.concat_paths prefix v) in
-          match new_map with `Ok n -> aux ~prefix n tl | `Duplicate -> aux ~prefix acc tl)
+          let with_nested =
+            aux ~prefix:(Utils.concat_paths v prefix) acc rest
+          in
+          let new_map =
+            Map.add with_nested ~key:k ~data:(Utils.concat_paths prefix v)
+          in
+          match new_map with
+          | `Ok n -> aux ~prefix n tl
+          | `Duplicate -> aux ~prefix acc tl)
     in
     aux ~prefix:"" (Map.empty (module String)) routes
 
-  let pp_single_route route = 
-  let open Fmt in
-  let quoted = quote string in
-  let style_simple_route (route, file) =
-    const
-      (parens
-         (pair ~sep:sp
-            (styled (`Fg `Magenta) quoted)
-            (styled (`Fg `Green) quoted)))
-      (route, file)
-  in
-  let style_nested_first_route (route, file) =
-    const
-      (hbox (
-         (pair ~sep:sp
-            (styled (`Fg `Magenta) quoted)
-            (styled (`Fg `Green) quoted))))
-      (route, file)
-  in
+  let pp_single_route route =
+    let open Fmt in
+    let quoted = quote string in
+    let style_simple_route (route, file) =
+      const
+        (parens
+           (pair ~sep:sp
+              (styled (`Fg `Magenta) quoted)
+              (styled (`Fg `Green) quoted)))
+        (route, file)
+    in
+    let style_nested_first_route (route, file) =
+      const
+        (hbox
+           (pair ~sep:sp
+              (styled (`Fg `Magenta) quoted)
+              (styled (`Fg `Green) quoted)))
+        (route, file)
+    in
     let rec aux = function
-      | Simple (url, file) -> style_simple_route (url, file) 
-      | Nested (url, file, rest) -> 
+      | Simple (url, file) -> style_simple_route (url, file)
+      | Nested (url, file, rest) ->
           let rest_style = List.map ~f:aux rest |> record |> parens in
           let base_style = style_nested_first_route (url, file) in
           record [ base_style; rest_style ] |> parens
-    in aux route
+    in
+    aux route
 
-  let pp (routes: t) = 
+  let pp (routes : t) =
     let open Fmt in
     List.map ~f:pp_single_route routes |> record |> parens
 end
@@ -108,7 +119,7 @@ type t = {
   language : string; [@default defaults.language]
   base_url : string; [@default ""] [@sexp_drop_default String.equal]
   build_dir : string; [@default "_papyrus"] [@sexp_drop_default String.equal]
-  routes : Routes.t [@default []];
+  routes : Routes.t; [@default []]
 }
 [@@deriving sexp, fields]
 

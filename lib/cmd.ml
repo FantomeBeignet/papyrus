@@ -1,7 +1,7 @@
 open Cmdliner
 
 let verbose_term =
-  let info = Arg.info ["v"; "verbose"] ~doc:"Verbose command output" in
+  let info = Arg.info [ "v"; "verbose" ] ~doc:"Verbose command output" in
   Arg.value (Arg.flag info)
 
 let title_term =
@@ -18,8 +18,7 @@ let description_term =
 let language_term =
   let default = "en" in
   let info =
-    Arg.info [ "l"; "language" ] ~docv:"LANGUAGE"
-      ~doc:"Language of the project"
+    Arg.info [ "l"; "language" ] ~docv:"LANGUAGE" ~doc:"Language of the project"
   in
   Arg.value (Arg.opt Arg.string default info)
 
@@ -32,14 +31,14 @@ let gitignore_term =
 
 let init_term =
   Term.(
-    const Init.init_cmd $ title_term $ description_term $ language_term $ gitignore_term $ verbose_term)
+    const Init.init_cmd $ title_term $ description_term $ language_term
+    $ gitignore_term $ verbose_term)
 
 let init =
   let doc = "Initialise a Papyrus project" in
   let man = [ `S Manpage.s_synopsis; `P "papyrus init [OPTIONS] [NAME]" ] in
   let info = Cmd.info "init" ~man ~doc in
   Cmd.v info init_term
-
 
 let dev_term = Term.(const Dev.dev_cmd $ verbose_term)
 
