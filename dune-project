@@ -19,7 +19,21 @@
  (name papyrus)
  (synopsis "Documentation site generator from markdown")
  (description "Static documentation site generator from markdown files ")
- (depends ocaml dune)
+ (depends 
+   ocaml 
+   dune
+   core
+   core_unix
+   stdio
+   cmarkit
+   markup
+   fmt
+   cmdliner
+   ppx_let 
+   ppx_sexp_conv 
+   ppx_deriving
+   ppx_string 
+   ppx_fields_conv)
  (tags
   (markdown documentation "site generator")))
 

@@ -12,6 +12,15 @@ bug-reports: "https://github.com/FantomeBeignet/papyrus/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.7"}
+  "core"
+  "core_unix"
+  "core_unix.filename_unix"
+  "core_unix.sys_unix"
+  "stdio"
+  "cmarkit"
+  "markup"
+  "fmt"
+  "cmdliner"
   "odoc" {with-doc}
 ]
 build: [
